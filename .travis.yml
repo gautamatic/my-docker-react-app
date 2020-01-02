@@ -1,0 +1,24 @@
+sudo: required
+
+services:
+    # travis pulls in docker capabilities for this
+    - docker
+
+before_install:
+    # this tag will be only used internally within travis
+    # so this could have been named anything we see fit
+    #
+    # we will use the dev dockerfile because the production version of the build
+    # not have testable stuff
+    - docker build -t gautamatic/my-docker-react-app -f Dockerfile.dev .
+
+
+# commands needed to run our test suite
+# if any of these commands return a non-0 status code
+# travis will think, it failed
+script:
+    # - docker run <imageid> npm run test -- --coverage
+    # these flags automatically exit the test console
+    # as opposed to waiting for user input
+    - docker run gautamatic/my-docker-react-app npm run test -- -- coverage
+    
