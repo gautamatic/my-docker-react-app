@@ -1,0 +1,36 @@
+version: '3'
+services: 
+    my-web-application:
+        build:
+            context: .
+            dockerfile: ./Dockerfile.dev
+        
+        ports:
+            - "8090:3000"
+        
+        volumes: 
+            - /app/node_modules
+            - .:/app 
+        
+    my-tester:
+        # use the same docker file
+        # to run a container
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        
+        # just like the container above
+        # we want to bookmark the node modules folder inside the container
+        # we also want to map the currently directory on the host local file system
+        # to the app folder inside the container
+        volumes:
+            - /app/node_modules             # bookmarked, don't mess with this
+            
+            - .:/app                        # mapped to current directory
+                                            # when any request comes in for /app
+                                            # it will be routed to . in host local filesystem
+
+        # override the default startup command
+        # that is in the image
+        # npm run start
+        command: ["npm", "run", "test"]
